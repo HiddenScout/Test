@@ -1,0 +1,6 @@
+local StraterGui = game.StarterGui
+
+StraterGui:SetCore("SendNotification", {
+	Title = "Standart",
+	Text = "Test"
+})
