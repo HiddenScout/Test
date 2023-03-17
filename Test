@@ -1,6 +1,117 @@
-local StraterGui = game.StarterGui
+-- Values
 
-StraterGui:SetCore("SendNotification", {
-	Title = "Standart",
-	Text = "Test"
-})
+local wh = false
+local noclip = false
+
+-- Functions
+
+workspace.ChildAdded:Connect(function(model)
+	task.wait(5)
+    if wh then
+        if model:FindFirstChildWhichIsA("Humanoid") then
+            if game.Players:FindFirstChild(model.Name) then
+                if not model:FindFirstChild("WH_Highlight") then
+                    local high = Instance.new("Highlight", model)
+                    high.Name = "WH_Highlight"
+                    high.OutlineColor = Color3.fromRGB(0, 115, 255)
+                    high.FillColor = Color3.fromRGB(0, 59, 223)
+                end
+            end
+        end
+    end
+end)
+
+game:GetService("RunService").Stepped:Connect(function()
+    if noclip then
+        for _,part in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") and part.CanCollide then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- Creating a window
+
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local window = library.CreateLib("Strandart Exploits", "Ocean")
+
+-- Creating a tabs
+
+local mainTab = window:NewTab("Main")
+local configTab = window:NewTab("Config")
+local creditsTab = window:NewTab("Credits")
+
+-- Creating a sections
+
+local mainSection = mainTab:NewSection("Main")
+local main2Section = configTab:NewSection("Main")
+local main1Section = creditsTab:NewSection("Main")
+
+-- Creating a labels
+
+local credits = main1Section:NewLabel("created by Scratch(@Hidden_Scout)") 
+
+-- Buttons
+
+mainSection:NewSlider("SpeedHack", "Set your player speed", 100, 0, function(s)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+end)
+
+mainSection:NewSlider("JumpHack", "Set your player JumpPower", 1000, 0, function(s)
+    game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = true
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+end)
+
+mainSection:NewSlider("FOV", "Field of view, 120, 0, function(s)
+    workspace.CurrentCamera.FieldOfView = s
+end)
+
+mainSection:NewToggle("WallHack", "You can see players through walls", function(state)
+    if state then
+        for num,plr in pairs(game.Players:GetPlayers()) do
+            if not plr.Character:FindFirstChild("WH_Highlight") then
+                local high = Instance.new("Highlight", plr.Character)
+                high.Name = "WH_Highlight"
+                high.OutlineColor = Color3.fromRGB(0, 115, 255)
+                high.FillColor = Color3.fromRGB(0, 59, 223)
+            end
+        end
+        wh = true
+    else
+        for num,plr in pairs(game.Players:GetPlayers()) do
+            if plr.Character:FindFirstChild("WH_Highlight") then
+                plr.Character:FindFirstChild("WH_Highlight"):Destroy()
+            end
+        end
+        wh = false
+    end
+end)
+
+mainSection:NewToggle("Noclip", "You can walk through walls", function(state)
+    if state then
+        noclip = true
+    else
+        noclip = false
+    end
+end)
+
+mainSection:NewToggle("Invis[Broken]", "invisible", function(state)
+    if state then
+        for _,part in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if part:IsA("BasePart") then
+                part.Transparency = 1
+            end
+        end
+        game.Players.LocalPlayer.Character.Humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+        game.Players.LocalPlayer.Character.Humanoid.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
+    else
+        for _,part in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if part:IsA("BasePart") then
+                part.Transparency = 0
+            end
+        end
+        game.Players.LocalPlayer.Character.Humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.Viewer
+        game.Players.LocalPlayer.Character.Humanoid.HealthDisplayType = Enum.HumanoidHealthDisplayType.DisplayWhenDamaged
+    end
+end)
